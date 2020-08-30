@@ -2,7 +2,7 @@ const { Keystone } = require("@keystonejs/keystone");
 const { Text } = require("@keystonejs/fields");
 const { GraphQLApp } = require("@keystonejs/app-graphql");
 const { AdminUIApp } = require("@keystonejs/app-admin-ui");
-const { StaticApp } = require("@keystonejs/app-static");
+const { NextApp } = require("@keystonejs/app-next");
 
 const { MongooseAdapter: Adapter } = require("@keystonejs/adapter-mongoose");
 const PROJECT_NAME = "booking_platform";
@@ -30,5 +30,5 @@ keystone.createList("Note", {
 
 module.exports = {
     keystone,
-    apps: [new GraphQLApp(), new StaticApp({ path: "/", src: "public" }), new AdminUIApp({ name: PROJECT_NAME, enableDefaultRoute: true })],
+    apps: [new GraphQLApp(), new NextApp({ dir: "client" }), new AdminUIApp({ name: PROJECT_NAME, enableDefaultRoute: true })],
 };
