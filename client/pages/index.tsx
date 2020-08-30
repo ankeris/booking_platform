@@ -5,6 +5,7 @@ const ALL_TODOS = gql`
   query {
     allTodos {
       name
+      description
     }
   }
 `;
@@ -20,9 +21,15 @@ const Home = () => {
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
+      <h1>booking app </h1>
       <main>
-        <h1>next app</h1>
+        <ul>
+          {data.allTodos.map(x => (
+            <li>
+              {x.name}: {x.description}
+            </li>
+          ))}
+        </ul>
       </main>
 
       <footer></footer>
