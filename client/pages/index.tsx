@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useQuery, gql } from "@apollo/client";
 import dynamic from "next/dynamic";
 
-const TechnologiesFactory = dynamic(() => import("@components/TechnologiesFactory"), { ssr: false });
+const TechnologiesFactory = dynamic(() => import("pages/landing/Canvas/TechnologiesFactory"), { ssr: false });
 
 const ALL_PROJECTS = gql`
     query {
