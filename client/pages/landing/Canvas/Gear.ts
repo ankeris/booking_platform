@@ -1,15 +1,15 @@
 export class Gear {
-    private w: number;
+    public w: number;
     private h: number;
     private img: any;
     private rotationSpeed: number;
     private rotation: number = 0;
     private p: any; // p5 context
 
-    constructor(p: any, img: any, w: number, h: number, rotationSpeed: number) {
+    constructor(p: any, w: number, h: number, rotationSpeed: number) {
         this.w = w;
         this.h = h;
-        this.img = img;
+        this.img = p.loadImage("images/gear.png");
         this.rotationSpeed = rotationSpeed;
         this.p = p;
     }
