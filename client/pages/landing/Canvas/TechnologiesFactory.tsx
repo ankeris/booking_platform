@@ -33,6 +33,7 @@ const TechnologiesFactory = () => {
                 p.draw = () => {
                     windowResized();
                     treadMills();
+                    drawTechnologies();
                 };
 
                 const treadMills = () => {
@@ -59,6 +60,11 @@ const TechnologiesFactory = () => {
                     p.fill(squareColor);
                     p.rectMode(p.CENTER);
                 };
+
+                const drawTechnologies = () => {
+                    return {};
+                };
+
                 const windowResized = () => {
                     p.resizeCanvas(p.windowWidth, p.windowHeight / 1.7);
                 };
