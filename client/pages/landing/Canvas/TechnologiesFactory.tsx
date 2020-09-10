@@ -19,18 +19,10 @@ const TechnologiesFactory = () => {
             const sketch = p => {
                 const canvas: p5 = p.createCanvas(p.windowWidth, p.windowHeight / 1.7);
                 const DISTANCE_FROM_CENTER: number = 100;
-                const treadMillYPos: number = canvas.height / 1.5;
+                const treadMillYPos: number = canvas.height / 2;
                 const technologies: Array<any> = [];
-                let techSpawnerPipe: any;
                 let gear1: Gear;
                 let gear2: Gear;
-
-                const pipePosition = { x: 50, y: -50 };
-                const pipeEndPos = { x: 50, y: 40 };
-                let speed = 0;
-                const velocity = 0.12;
-                // ---
-                const img = p.loadImage("images/pipe.png");
 
                 p.setup = () => {
                     canvas.background(255);
@@ -41,15 +33,6 @@ const TechnologiesFactory = () => {
                 p.draw = () => {
                     windowResized();
                     treadMills();
-                    p.imageMode(p.CENTER);
-
-                    if (pipePosition.y <= pipeEndPos.y) {
-                        speed = speed + velocity;
-                        pipePosition.y = pipePosition.y + speed;
-                        p.image(img, pipePosition.x, pipePosition.y, 100, 100);
-                    } else {
-                        p.image(img, pipeEndPos.x, pipeEndPos.y, 100, 100);
-                    }
                 };
 
                 const treadMills = () => {
