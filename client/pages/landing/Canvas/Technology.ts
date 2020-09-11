@@ -2,54 +2,76 @@ interface DoneCallback {
     (technologyId: string): void;
 }
 
+interface ConstructorProps {
+    p: any;
+    spawnRightSide: boolean;
+    startX: number;
+    startY: number;
+    w: number;
+    h: number;
+}
+
 export class Technology {
     public w: number;
     private h: number;
     private img: any;
-    private rotationSpeed: number;
-    private rotation: number = 0;
+    private xPos: number = 0;
+    private yPos: number = 0;
     private p: any; // p5 context
+    private spawnedRightSide: boolean;
 
-    constructor(p: any, w: number, h: number, rotationSpeed: number) {
+    private hasFallen: boolean = false;
+
+    constructor({ w, h, p, startX, startY, spawnRightSide }: ConstructorProps) {
         this.w = w;
         this.h = h;
-        this.img = p.loadImage("images/gear.png");
-        this.rotationSpeed = rotationSpeed;
+        this.img = p.loadImage("images/graphql_logo.png");
         this.p = p;
+        this.xPos = startX;
+        this.yPos = startY;
+        this.spawnedRightSide = spawnRightSide;
     }
 
-    display(x: number, y: number, done: DoneCallback) {
-        this.rotation = this.rotation + this.rotationSpeed;
-        this.p.translate(x, y);
-        this.p.rotate(this.rotation);
+    display(treadMillTopYPos: number, done: DoneCallback) {
+        this.p.push();
         this.p.imageMode(this.p.CENTER);
-        this.p.image(this.img, 0, 0, this.w, this.h);
+        this.p.image(this.img, this.xPos, this.yPos, this.w, this.h);
 
-        let hasFallen = false;
         let hasSlidedToTheEndOfTreadMill = false;
         let hasFallenToCrusher = false;
-        if (!hasFallen) {
-            return (hasFallen = this.fall());
+
+        if (!this.hasFallen) {
+            return (this.hasFallen = this.fall(treadMillTopYPos));
         }
-        if (hasFallen && !hasSlidedToTheEndOfTreadMill) {
+        if (this.hasFallen && !hasSlidedToTheEndOfTreadMill) {
             return (hasSlidedToTheEndOfTreadMill = this.slideToTheEndOfTreadMill());
         }
-        if (hasFallen && hasSlidedToTheEndOfTreadMill) {
+        if (this.hasFallen && hasSlidedToTheEndOfTreadMill) {
             return (hasFallenToCrusher = this.fallToCrusher());
         }
         if (hasFallenToCrusher) {
             done("someId");
         }
+        this.p.pop();
     }
 
-    fall(): boolean {
-        return true;
+    fall(treadMillTopYPos: number): boolean {
+        this.yPos += 1;
+        console.log(this.yPos >= treadMillTopYPos - this.h / 2);
+        if (this.yPos >= treadMillTopYPos - this.h / 2) return true;
+        return false;
     }
 
     slideToTheEndOfTreadMill(): boolean {
+        this.xPos = this.addOrSubstr(this.xPos, this.spawnedRightSide, 1);
         return true;
     }
     fallToCrusher(): boolean {
         return true;
+    }
+
+    private addOrSubstr(whatNum: number, add: boolean, howMany: number): number {
+        if (add) return whatNum + howMany;
+        return whatNum - howMany;
     }
 }
