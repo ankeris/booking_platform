@@ -12,6 +12,7 @@ interface IConstructorProps {
     startY: number;
     spawnRightSide: boolean;
     closestGear: Gear;
+    canvasHeight: number;
 }
 
 export class Technology {
@@ -23,15 +24,18 @@ export class Technology {
     private closestGear: Gear;
     private spawnedRightSide: boolean;
     private img: any;
+    private canvasHeight: number;
 
     private hasFallen: boolean = false;
     private hasSlidedToTheEndOfTreadMill: boolean = false;
+    private hasFallenToCrusher: boolean = false;
     private readonly GRAVITY = 0.15;
     private fallingSpeed = 1;
     private readonly airResistance = 0.05;
     private fallToCrusherSpeed = 3;
+    private finished = false;
 
-    constructor({ w, h, p, startX, startY, spawnRightSide, closestGear }: IConstructorProps) {
+    constructor({ w, h, p, startX, startY, spawnRightSide, closestGear, canvasHeight }: IConstructorProps) {
         this.w = w;
         this.h = h;
         this.p = p;
@@ -39,6 +43,7 @@ export class Technology {
         this.yPos = startY;
         this.spawnedRightSide = spawnRightSide;
         this.closestGear = closestGear;
+        this.canvasHeight = canvasHeight;
         this.img = p.loadImage("images/graphql_logo.png");
     }
 
@@ -46,7 +51,6 @@ export class Technology {
         this.p.push();
         this.p.imageMode(this.p.CENTER);
         this.p.image(this.img, this.xPos, this.yPos, this.w, this.h);
-        let hasFallenToCrusher = false;
 
         if (!this.hasFallen) {
             return (this.hasFallen = this.fall(treadMillTopYPos));
@@ -54,11 +58,13 @@ export class Technology {
         if (this.hasFallen && !this.hasSlidedToTheEndOfTreadMill) {
             return (this.hasSlidedToTheEndOfTreadMill = this.slideToTheEndOfTreadMill());
         }
-        if (this.hasFallen && this.hasSlidedToTheEndOfTreadMill) {
-            return (hasFallenToCrusher = this.fallToCrusher());
+        if (this.hasFallen && this.hasSlidedToTheEndOfTreadMill && !this.hasFallenToCrusher) {
+            return (this.hasFallenToCrusher = this.fallToCrusher());
         }
-        if (hasFallenToCrusher) {
-            done("someId");
+
+        if (this.hasFallenToCrusher && !this.finished) {
+            this.finished = true;
+            done("im done");
         }
         this.p.pop();
     }
@@ -84,10 +90,11 @@ export class Technology {
         if (this.fallToCrusherSpeed > 0) {
             this.fallToCrusherSpeed = this.fallToCrusherSpeed - this.airResistance;
         }
-        console.log(this.fallToCrusherSpeed);
-
         this.xPos = this.addOrSubstr(this.xPos, this.fallToCrusherSpeed);
-        return true;
+        if (this.yPos >= this.canvasHeight) {
+            return true;
+        }
+        return false;
     }
 
     private addOrSubstr(whatNum: number, howMany: number): number {

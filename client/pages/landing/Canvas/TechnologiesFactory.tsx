@@ -21,9 +21,10 @@ const TechnologiesFactory = () => {
                 const canvas: p5 = p.createCanvas(p.windowWidth, p.windowHeight / 1.7);
                 const DISTANCE_FROM_CENTER: number = 100;
                 const TREADMILL_HEIGHT = 55;
+                const canvasHeight = canvas.height;
                 const TREADMILL_Y_POS: number = canvas.height / 2;
                 const allTechnologies: Array<Technology> = [];
-                const techDisplayed: Array<Technology> = [];
+                let techDisplayed: Array<Technology> = [];
 
                 let gear1: Gear;
                 let gear2: Gear;
@@ -34,23 +35,21 @@ const TechnologiesFactory = () => {
                     gear2 = new Gear(p, 50, 50, -0.04);
                     let spawnRightSide = true;
                     setInterval(() => {
-                        if (techDisplayed.length < 3) {
-                            const getXPos = spawnRightSide ? 50 : canvas.width - 50;
-                            const closestGear = spawnRightSide ? gear1 : gear2;
-                            techDisplayed.push(
-                                new Technology({
-                                    p,
-                                    spawnRightSide,
-                                    closestGear,
-                                    startX: getXPos,
-                                    startY: -25,
-                                    w: 60,
-                                    h: 60
-                                })
-                            );
-                            console.log(techDisplayed);
-                            spawnRightSide = !spawnRightSide;
-                        }
+                        const getXPos = spawnRightSide ? 50 : canvas.width - 50;
+                        const closestGear = spawnRightSide ? gear1 : gear2;
+                        techDisplayed.push(
+                            new Technology({
+                                p,
+                                spawnRightSide,
+                                closestGear,
+                                startX: getXPos,
+                                startY: -25,
+                                w: 60,
+                                h: 60,
+                                canvasHeight
+                            })
+                        );
+                        spawnRightSide = !spawnRightSide;
                     }, 2000);
                 };
 
@@ -89,8 +88,8 @@ const TechnologiesFactory = () => {
 
                 const drawTechnologies = () => {
                     for (let i = 0; i < techDisplayed.length; i++) {
-                        techDisplayed[i].display(TREADMILL_Y_POS - TREADMILL_HEIGHT / 2, () => {
-                            console.log("done");
+                        techDisplayed[i].display(TREADMILL_Y_POS - TREADMILL_HEIGHT / 2, e => {
+                            techDisplayed = techDisplayed.slice(1);
                         });
                     }
                 };
