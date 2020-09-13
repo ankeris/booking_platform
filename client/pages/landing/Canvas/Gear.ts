@@ -1,5 +1,6 @@
 export class Gear {
     public w: number;
+    public xPos: number = 0;
     private h: number;
     private img: any;
     private rotationSpeed: number;
@@ -16,6 +17,7 @@ export class Gear {
 
     display(x: number, y: number) {
         this.rotation = this.rotation + this.rotationSpeed;
+        this.xPos = x;
         this.p.translate(x, y);
         this.p.rotate(this.rotation);
         this.p.imageMode(this.p.CENTER);
