@@ -36,8 +36,17 @@ const TechnologiesFactory = () => {
                     setInterval(() => {
                         if (techDisplayed.length < 3) {
                             const getXPos = spawnRightSide ? 50 : canvas.width - 50;
+                            const closestGear = spawnRightSide ? gear1 : gear2;
                             techDisplayed.push(
-                                new Technology({ p, spawnRightSide, startX: getXPos, startY: 50, w: 60, h: 60 })
+                                new Technology({
+                                    p,
+                                    spawnRightSide,
+                                    closestGear,
+                                    startX: getXPos,
+                                    startY: -25,
+                                    w: 60,
+                                    h: 60
+                                })
                             );
                             console.log(techDisplayed);
                             spawnRightSide = !spawnRightSide;
@@ -49,19 +58,16 @@ const TechnologiesFactory = () => {
                     windowResized();
                     treadMills();
                     drawTechnologies();
-                    techDisplayed.forEach(element => {
-                        element.display(TREADMILL_Y_POS - TREADMILL_HEIGHT / 2, () => {
-                            console.log("done");
-                        });
-                    });
                 };
 
                 const treadMills = () => {
+                    const leftGearXPos = canvas.width / 2 - DISTANCE_FROM_CENTER;
+                    const rightGearXPos = canvas.width / 2 + DISTANCE_FROM_CENTER;
                     p.push();
-                    gear1.display(canvas.width / 2 - DISTANCE_FROM_CENTER, TREADMILL_Y_POS);
+                    gear1.display(leftGearXPos, TREADMILL_Y_POS);
                     p.pop();
                     p.push();
-                    gear2.display(canvas.width / 2 + DISTANCE_FROM_CENTER, TREADMILL_Y_POS);
+                    gear2.display(rightGearXPos, TREADMILL_Y_POS);
                     p.pop();
                     p.rect(0, TREADMILL_Y_POS, canvas.width - DISTANCE_FROM_CENTER - gear1.w + 5, 55, 0, 35, 35, 0);
                     p.rect(
@@ -82,7 +88,11 @@ const TechnologiesFactory = () => {
                 };
 
                 const drawTechnologies = () => {
-                    // if (allTechnologies)
+                    for (let i = 0; i < techDisplayed.length; i++) {
+                        techDisplayed[i].display(TREADMILL_Y_POS - TREADMILL_HEIGHT / 2, () => {
+                            console.log("done");
+                        });
+                    }
                 };
 
                 const windowResized = () => {
