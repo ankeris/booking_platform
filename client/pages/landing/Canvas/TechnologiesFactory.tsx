@@ -24,12 +24,13 @@ const TechnologiesFactory = () => {
                 const canvasHeight = canvas.height;
                 const TREADMILL_Y_POS: number = canvas.height / 2;
                 const allTechnologies: Array<Technology> = [];
-                let techDisplayed: Array<Technology> = [];
+                const techDisplayed: Array<Technology> = [];
 
                 let gear1: Gear;
                 let gear2: Gear;
 
                 p.setup = () => {
+                    p.pixelDensity(0.9);
                     canvas.background(255);
                     gear1 = new Gear(p, 50, 50, 0.04);
                     gear2 = new Gear(p, 50, 50, -0.04);
@@ -89,7 +90,8 @@ const TechnologiesFactory = () => {
                 const drawTechnologies = () => {
                     for (let i = 0; i < techDisplayed.length; i++) {
                         techDisplayed[i].display(TREADMILL_Y_POS - TREADMILL_HEIGHT / 2, e => {
-                            techDisplayed = techDisplayed.slice(1);
+                            console.log(techDisplayed);
+                            techDisplayed.shift();
                         });
                     }
                 };
