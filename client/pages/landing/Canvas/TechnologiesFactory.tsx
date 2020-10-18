@@ -24,7 +24,9 @@ const TechnologiesFactory = () => {
                 const canvasHeight = canvas.height;
                 const TREADMILL_Y_POS: number = canvas.height / 2;
                 const allTechnologies: Array<Technology> = [];
-                const techDisplayed: Array<Technology> = [];
+                let spawnerInterval: any = null;
+                let spawnRightSide = true;
+                let techDisplayed: Array<Technology | null> = [];
 
                 let gear1: Gear;
                 let gear2: Gear;
@@ -34,24 +36,7 @@ const TechnologiesFactory = () => {
                     canvas.background(255);
                     gear1 = new Gear(p, 50, 50, 0.04);
                     gear2 = new Gear(p, 50, 50, -0.04);
-                    let spawnRightSide = true;
-                    setInterval(() => {
-                        const getXPos = spawnRightSide ? 50 : canvas.width - 50;
-                        const closestGear = spawnRightSide ? gear1 : gear2;
-                        techDisplayed.push(
-                            new Technology({
-                                p,
-                                spawnRightSide,
-                                closestGear,
-                                startX: getXPos,
-                                startY: -25,
-                                w: 60,
-                                h: 60,
-                                canvasHeight
-                            })
-                        );
-                        spawnRightSide = !spawnRightSide;
-                    }, 2000);
+                    spawnerInterval = setInterval(spawn, 2000);
                 };
 
                 p.draw = () => {
@@ -89,22 +74,57 @@ const TechnologiesFactory = () => {
 
                 const drawTechnologies = () => {
                     for (let i = 0; i < techDisplayed.length; i++) {
-                        techDisplayed[i].display(TREADMILL_Y_POS - TREADMILL_HEIGHT / 2, e => {
-                            console.log(techDisplayed);
-                            techDisplayed.shift();
-                        });
+                        const curr = techDisplayed[i];
+                        if (curr) {
+                            curr.display(TREADMILL_Y_POS - TREADMILL_HEIGHT / 2, e => {
+                                techDisplayed[i] = null
+                            });
+                        }
+                    }
+                    // clear the list
+                    if (techDisplayed.length > 5) {
+                        techDisplayed = techDisplayed.filter(x => Boolean(x))
                     }
                 };
 
                 const windowResized = () => {
                     p.resizeCanvas(p.windowWidth, p.windowHeight / 1.7);
                 };
+
+                const spawn = () => {
+                    const getXPos = spawnRightSide ? 50 : canvas.width - 50;
+                    const closestGear = spawnRightSide ? gear1 : gear2;
+                    techDisplayed.push(
+                        new Technology({
+                            p,
+                            spawnRightSide,
+                            closestGear,
+                            startX: getXPos,
+                            startY: -25,
+                            w: 60,
+                            h: 60,
+                            canvasHeight
+                        })
+                    );
+                    spawnRightSide = !spawnRightSide;
+            }
+            
+            window.addEventListener('focus', function() {
+                spawnerInterval = setInterval(spawn, 2000);
+            },false);
+            
+            window.addEventListener('blur', function() {
+                clearInterval(spawnerInterval);
+            },false);
+
+
             };
 
             if (!containerRef.current.children.length) {
                 new p5(sketch, containerRef.current);
             }
         }
+
     }, [containerRef]);
 
     return (
