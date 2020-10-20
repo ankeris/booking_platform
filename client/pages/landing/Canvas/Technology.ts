@@ -13,6 +13,7 @@ interface IConstructorProps {
     spawnRightSide: boolean;
     closestGear: Gear;
     canvasHeight: number;
+    imagePath?: string;
 }
 
 export class Technology {
@@ -35,7 +36,17 @@ export class Technology {
     private fallToCrusherSpeed = 3;
     private finished = false;
 
-    constructor({ w, h, p, startX, startY, spawnRightSide, closestGear, canvasHeight }: IConstructorProps) {
+    constructor({
+        w,
+        h,
+        p,
+        startX,
+        startY,
+        spawnRightSide,
+        closestGear,
+        canvasHeight,
+        imagePath = "images/graphql_logo.png"
+    }: IConstructorProps) {
         this.w = w;
         this.h = h;
         this.p = p;
@@ -44,7 +55,7 @@ export class Technology {
         this.spawnedRightSide = spawnRightSide;
         this.closestGear = closestGear;
         this.canvasHeight = canvasHeight;
-        this.img = p.loadImage("images/graphql_logo.png");
+        this.img = p.loadImage(imagePath);
     }
 
     display(treadMillTopYPos: number, done: DoneCallback) {

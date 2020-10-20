@@ -4,6 +4,7 @@ import styled, { StyledComponent } from "styled-components";
 import p5 from "p5";
 import { Gear } from "./Gear";
 import { Technology } from "./Technology";
+import { Nullable } from "@core/general.types";
 
 const CanvasWrapper = styled.section`
     height: 60vh;
@@ -24,10 +25,9 @@ const TechnologiesFactory = () => {
                 const canvasHeight = canvas.height;
                 const TREADMILL_Y_POS: number = canvas.height / 2;
                 const allTechnologies: Array<Technology> = [];
-                let spawnerInterval: any = null;
+                let spawnerInterval: number;
                 let spawnRightSide = true;
                 let techDisplayed: Array<Technology | null> = [];
-
                 let gear1: Gear;
                 let gear2: Gear;
 
@@ -40,12 +40,12 @@ const TechnologiesFactory = () => {
                 };
 
                 p.draw = () => {
-                    windowResized();
-                    treadMills();
+                    resizeCanvasToWindow();
+                    drawTreadMills();
                     drawTechnologies();
                 };
 
-                const treadMills = () => {
+                const drawTreadMills = () => {
                     const leftGearXPos = canvas.width / 2 - DISTANCE_FROM_CENTER;
                     const rightGearXPos = canvas.width / 2 + DISTANCE_FROM_CENTER;
                     p.push();
@@ -76,18 +76,18 @@ const TechnologiesFactory = () => {
                     for (let i = 0; i < techDisplayed.length; i++) {
                         const curr = techDisplayed[i];
                         if (curr) {
-                            curr.display(TREADMILL_Y_POS - TREADMILL_HEIGHT / 2, e => {
-                                techDisplayed[i] = null
+                            curr.display(TREADMILL_Y_POS - TREADMILL_HEIGHT / 2, _ => {
+                                techDisplayed[i] = null;
                             });
                         }
                     }
                     // clear the list
                     if (techDisplayed.length > 5) {
-                        techDisplayed = techDisplayed.filter(x => Boolean(x))
+                        techDisplayed = techDisplayed.filter(x => Boolean(x));
                     }
                 };
 
-                const windowResized = () => {
+                const resizeCanvasToWindow = () => {
                     p.resizeCanvas(p.windowWidth, p.windowHeight / 1.7);
                 };
 
@@ -107,31 +107,20 @@ const TechnologiesFactory = () => {
                         })
                     );
                     spawnRightSide = !spawnRightSide;
-            }
-            
-            window.addEventListener('focus', function() {
-                spawnerInterval = setInterval(spawn, 2000);
-            },false);
-            
-            window.addEventListener('blur', function() {
-                clearInterval(spawnerInterval);
-            },false);
+                };
 
+                window.addEventListener("focus", () => (spawnerInterval = setInterval(spawn, 2000)), false);
 
+                window.addEventListener("blur", () => clearInterval(spawnerInterval), false);
             };
 
             if (!containerRef.current.children.length) {
                 new p5(sketch, containerRef.current);
             }
         }
-
     }, [containerRef]);
 
-    return (
-        <>
-            <CanvasWrapper ref={containerRef} id="canvas-container"></CanvasWrapper>
-        </>
-    );
+    return <CanvasWrapper ref={containerRef} id="canvas-container"></CanvasWrapper>;
 };
 
 export default TechnologiesFactory;
