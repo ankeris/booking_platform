@@ -5,6 +5,7 @@ import p5 from "p5";
 import { Gear } from "./Gear";
 import { Technology } from "./Technology";
 import { Nullable } from "@core/general.types";
+import { ITechnology } from "@core/technologies.types";
 
 const CanvasWrapper = styled.section`
     height: 60vh;
@@ -12,8 +13,11 @@ const CanvasWrapper = styled.section`
         border: 2px solid black;
     }
 `;
+interface IProps {
+    allTechnologies: ITechnology[];
+}
 
-const TechnologiesFactory = () => {
+const TechnologiesFactory = ({ allTechnologies }: IProps) => {
     const containerRef = useRef<HTMLElement>(null);
 
     useEffect(() => {
@@ -24,8 +28,10 @@ const TechnologiesFactory = () => {
                 const TREADMILL_HEIGHT = 55;
                 const canvasHeight = canvas.height;
                 const TREADMILL_Y_POS: number = canvas.height / 2;
-                const allTechnologies: Array<Technology> = [];
+
                 let spawnerInterval: number;
+                const spawnIndexLength = allTechnologies.length;
+                let spawnIndex = 0;
                 let spawnRightSide = true;
                 let techDisplayed: Array<Technology | null> = [];
                 let gear1: Gear;
@@ -103,9 +109,15 @@ const TechnologiesFactory = () => {
                             startY: -25,
                             w: 60,
                             h: 60,
-                            canvasHeight
+                            canvasHeight,
+                            imagePath: allTechnologies[spawnIndex].logoImage.publicUrl
                         })
                     );
+                    if (spawnIndex < spawnIndexLength - 1) {
+                        spawnIndex++;
+                    } else {
+                        spawnIndex = 0;
+                    }
                     spawnRightSide = !spawnRightSide;
                 };
 
