@@ -1,4 +1,4 @@
-const { Text, File, DateTime } = require("@keystonejs/fields");
+const { Text, File, CalendarDay } = require("@keystonejs/fields");
 const { LocalFileAdapter } = require("@keystonejs/file-adapters");
 
 const fileAdapter = new LocalFileAdapter({
@@ -18,7 +18,7 @@ module.exports = {
                 schemaDoc: "Logo of the technology"
             },
             description: { type: Text, schemaDoc: "Describe for how long & how the tech was used" },
-            experienceStart: { type: DateTime, schemaDoc: "When did one start learning the technology?" }
+            experienceStart: { type: CalendarDay, schemaDoc: "When did one start learning the technology?" }
         }
     }
 };
