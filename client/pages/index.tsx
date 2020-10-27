@@ -3,6 +3,7 @@ import { useQuery, gql } from "@apollo/client";
 import dynamic from "next/dynamic";
 import { Technology } from "@core/technologies.types";
 import { Project } from "@core/projects.types";
+import { Projects } from "./landing/Projects/Projects";
 
 const TechnologiesFactory = dynamic(() => import("pages/landing/Canvas/TechnologiesFactory"), { ssr: false });
 
@@ -29,6 +30,7 @@ interface ILandingPageGQLData {
 
 const Home = () => {
     const { loading, error, data } = useQuery<ILandingPageGQLData>(ALL_PROJECTS);
+    const { allTechnologies = undefined, allProjects = undefined } = data || {};
 
     if (error) return <h1>{error.message}</h1>;
     return loading ? (
@@ -41,15 +43,8 @@ const Home = () => {
             </Head>
             <h1>Juozas Rastenis Portfolio</h1>
             <main>
-                {data?.allTechnologies && <TechnologiesFactory allTechnologies={data.allTechnologies} />}
-                <ul>
-                    {data?.allProjects.map(x => (
-                        <li key={x.title}>
-                            {x.title}: {x.description}
-                            <img src={x.previewImage?.publicUrl} alt="lyra" width="150" />
-                        </li>
-                    ))}
-                </ul>
+                {allTechnologies && <TechnologiesFactory allTechnologies={allTechnologies} />}
+                {allProjects && <Projects projects={allProjects}></Projects>}
             </main>
 
             <footer></footer>
